@@ -48,6 +48,18 @@ public class FakeSymphonyApi {
         return new ResponseEntity<>(messages, HttpStatus.CREATED);
     }
 
+
+    @PostMapping(path="/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Stream> createStream
+            (@RequestBody Stream stream)
+            throws NoSuchStreamException {
+
+        Stream newStream = messageService.createStream(stream);
+
+        return new ResponseEntity<>(newStream, HttpStatus.CREATED);
+    }
+
+
     @ExceptionHandler(NoSuchStreamException.class)
     public void noStreamException(HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);

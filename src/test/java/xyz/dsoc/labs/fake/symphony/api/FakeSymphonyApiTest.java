@@ -102,7 +102,7 @@ public class FakeSymphonyApiTest {
     }
 
     @Test
-    public void whenValidMessageProvidedToAddMessageShouldReturnOk() throws Exception {
+    public void whenValidMessageProvidedToAddMessageShouldReturnCreated() throws Exception {
 
         Stream s = new Stream();
         s.addMessage(m);
@@ -114,6 +114,33 @@ public class FakeSymphonyApiTest {
                 .perform(post("/streams/123/messages")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mJson)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isCreated())
+        ;
+    }
+
+    @Test
+    public void whenValidStreamrovidedToCreateStreamShouldReturnCreated() throws Exception {
+
+        Stream s = new Stream();
+        s.setStreamId("123");
+
+        String streamJson = mapper.writeValueAsString(s);
+
+        Stream dbS = new Stream();
+        dbS.setStreamId("123");
+        dbS.setStreamPk(1);
+
+
+
+        when(messageService.createStream(s)).thenReturn(dbS);
+
+
+        mockMvc
+                .perform(post("/streams")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(streamJson)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
