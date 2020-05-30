@@ -6,6 +6,8 @@ import xyz.dsoc.labs.fake.symphony.domain.Message;
 import xyz.dsoc.labs.fake.symphony.domain.Stream;
 import xyz.dsoc.labs.fake.symphony.repo.StreamRepo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,11 +26,11 @@ public class MessageService {
 
     /**
      * @return The new stream to create
-     * @throws MessageServiceException When the stream cannot be created
+     * @throws NoSuchStreamException When the stream cannot be created
      */
-    public Stream createStream(Stream stream) throws MessageServiceException {
+    public Stream createStream(Stream stream) throws NoSuchStreamException {
         if (null == stream) {
-            throw new MessageServiceException("You need to supply a valid, non-null stream");
+            throw new NoSuchStreamException("You need to supply a valid, non-null stream");
         }
 
         return repo.save(stream);
@@ -38,18 +40,20 @@ public class MessageService {
     /**
      * @param streamId The id of the message stream
      * @param message The message to add to the stream
+     * @throws NoSuchStreamException when there is no match to the stream id
+     * @throws BadMessageException when the message supplied is null
      */
-    public Stream addMessageToStream(String streamId, Message message) throws MessageServiceException {
+    public Stream addMessageToStream(String streamId, Message message) throws NoSuchStreamException, BadMessageException {
 
         if (null == message) {
-            throw new MessageServiceException("You need to supply a valid, non-null message");
+            throw new BadMessageException("You need to supply a valid, non-null message");
 
         }
 
         Optional<Stream> oStream = repo.findOneByStreamId(streamId);
 
         if (!oStream.isPresent()) {
-            throw new MessageServiceException("There is no stream with id "+streamId);
+            throw new NoSuchStreamException("There is no stream with id "+streamId);
 
         }
 
@@ -57,6 +61,29 @@ public class MessageService {
         stream.addMessage(message);
 
         return repo.save(stream);
+
+    }
+
+
+    /**
+     * @param streamId The stream identifier
+     * @return The messages in this stream or an empty list if no messages exist
+     * @throws NoSuchStreamException When the stream id cannot be found
+     */
+
+    public List<Message> getMessages(String streamId) throws NoSuchStreamException {
+
+        Optional<Stream> oStream = repo.findOneByStreamId(streamId);
+
+        if (!oStream.isPresent()) {
+            throw new NoSuchStreamException("There is no stream with id "+streamId);
+
+        }
+
+        Stream stream = oStream.get();
+        List<Message> messages = (null == stream.getMessages()) ? new ArrayList<>() : stream.getMessages();
+
+        return messages;
 
     }
 

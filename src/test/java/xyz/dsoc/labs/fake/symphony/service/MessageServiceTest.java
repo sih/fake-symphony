@@ -47,13 +47,13 @@ public class MessageServiceTest {
     @Autowired
     private MessageService messageService;
 
-    @Test(expected = MessageServiceException.class)
-    public void createStreamShouldThrowExceptionWhenStreamIsNull() throws MessageServiceException {
+    @Test(expected = NoSuchStreamException.class)
+    public void createStreamShouldThrowExceptionWhenStreamIsNull() throws NoSuchStreamException {
         messageService.createStream(null);
     }
 
     @Test
-    public void createStreamShouldReturnStreamWithPkSet() throws MessageServiceException {
+    public void createStreamShouldReturnStreamWithPkSet() throws NoSuchStreamException {
 
 
 
@@ -66,7 +66,7 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void createStreamShouldCascadeAndCreateMessages() throws MessageServiceException {
+    public void createStreamShouldCascadeAndCreateMessages() throws NoSuchStreamException {
 
 
         foo.setMessages(Collections.singletonList(m));
@@ -87,21 +87,21 @@ public class MessageServiceTest {
 
     }
 
-    @Test(expected = MessageServiceException.class)
-    public void addMessageShouldThrowExceptionWhenMessageNull() throws MessageServiceException {
+    @Test(expected = BadMessageException.class)
+    public void addMessageShouldThrowExceptionWhenMessageNull() throws NoSuchStreamException, BadMessageException {
 
         repo.save(foo);
 
         messageService.addMessageToStream("123", null);
     }
 
-    @Test(expected = MessageServiceException.class)
-    public void addMessageShouldThrowExceptionWhenNoStreamForId() throws MessageServiceException {
+    @Test(expected = NoSuchStreamException.class)
+    public void addMessageShouldThrowExceptionWhenNoStreamForId() throws NoSuchStreamException, BadMessageException {
         messageService.addMessageToStream("123", m);
     }
 
     @Test
-    public void addMessageShouldAddANewMessageToTheStream() throws MessageServiceException {
+    public void addMessageShouldAddANewMessageToTheStream() throws NoSuchStreamException, BadMessageException {
 
         repo.save(foo);
 
@@ -117,5 +117,36 @@ public class MessageServiceTest {
         assertNotEquals(dbFooMessage.getMessagePk(), m.getMessagePk());
 
     }
+
+    @Test(expected = NoSuchStreamException.class)
+    public void getMessagesShouldThrowExceptionWhenNoStreamForId() throws NoSuchStreamException {
+        messageService.getMessages("123");
+    }
+
+    @Test
+    public void getMessagesShouldReturnEmptyArrayWhenNullMessagesInStream() throws NoSuchStreamException {
+
+        assertNull(foo.getMessages());
+        repo.save(foo);
+
+        List<Message> messages = messageService.getMessages(foo.getStreamId());
+        assertNotNull(messages);
+        assertTrue(messages.isEmpty());
+    }
+
+    @Test
+    public void getMessagesShouldReturnAppropriateMessagesWhenTheyExist() throws NoSuchStreamException {
+
+        foo.addMessage(m);
+        assertEquals(1, foo.getMessages().size());
+        repo.save(foo);
+
+        List<Message> messages = messageService.getMessages(foo.getStreamId());
+        assertNotNull(messages);
+        assertEquals(1, messages.size());
+
+        assertEquals(m ,messages.get(0));
+    }
+
 
 }
