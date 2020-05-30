@@ -6,6 +6,8 @@ import xyz.dsoc.labs.fake.symphony.domain.Message;
 import xyz.dsoc.labs.fake.symphony.domain.Stream;
 import xyz.dsoc.labs.fake.symphony.repo.StreamRepo;
 
+import java.util.Optional;
+
 /**
  * @author sih
  */
@@ -37,7 +39,24 @@ public class MessageService {
      * @param streamId The id of the message stream
      * @param message The message to add to the stream
      */
-    public void addMessageToStream(int streamId, Message message) {
+    public Stream addMessageToStream(String streamId, Message message) throws MessageServiceException {
+
+        if (null == message) {
+            throw new MessageServiceException("You need to supply a valid, non-null message");
+
+        }
+
+        Optional<Stream> oStream = repo.findOneByStreamId(streamId);
+
+        if (!oStream.isPresent()) {
+            throw new MessageServiceException("There is no stream with id "+streamId);
+
+        }
+
+        Stream stream = oStream.get();
+        stream.addMessage(message);
+
+        return repo.save(stream);
 
     }
 

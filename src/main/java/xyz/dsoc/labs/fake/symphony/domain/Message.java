@@ -3,6 +3,7 @@ package xyz.dsoc.labs.fake.symphony.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
@@ -23,6 +24,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name="message", schema="symphony")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Message {
 
     @Id
@@ -32,6 +34,7 @@ public class Message {
     private Integer messagePk;
 
     @Column(name = "message_id")
+    @EqualsAndHashCode.Include
     private String messageId;
 
     @Column(name = "message_ts")
