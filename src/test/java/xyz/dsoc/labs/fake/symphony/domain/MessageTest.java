@@ -25,6 +25,7 @@ public class MessageTest {
         m.setContent("Hello");
         m.setMessageId("123");
         m.setTimestamp(123L);
+        m.setUserHandle("foobert");
 
         JsonNode messageNode = mapper.valueToTree(m);
         assertNotNull(messageNode);
@@ -32,6 +33,7 @@ public class MessageTest {
         assertEquals("123", messageNode.get("messageId").asText());
         assertEquals("Hello", messageNode.get("message").asText());
         assertEquals(123L, messageNode.get("timestamp").asLong());
+        assertEquals("foobert", messageNode.get("user").asText());
 
         // should hide some attributes
         assertNull(messageNode.get("content"));

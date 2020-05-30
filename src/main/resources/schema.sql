@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS message
     message_content VARCHAR NOT NULL,
     message_ts INT NOT NULL,
     stream_pk INT NOT NULL,
+    user_handle VARCHAR NOT NULL,
     PRIMARY KEY (message_pk)
 )
 ;

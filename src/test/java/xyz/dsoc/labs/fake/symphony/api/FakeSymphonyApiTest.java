@@ -51,6 +51,7 @@ public class FakeSymphonyApiTest {
         m.setTimestamp(1234L);
         m.setMessageId("1234");
         m.setContent("Hello");
+        m.setUserHandle("foobert");
 
         messages.add(m);
 

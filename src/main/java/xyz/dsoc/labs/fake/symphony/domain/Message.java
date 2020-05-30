@@ -43,5 +43,9 @@ public class Message {
     @Column(name = "message_content")
     @JsonProperty("message")
     private String content;
+
+    @Column(name = "user_handle")
+    @JsonProperty("user")
+    private String userHandle;
 }
 

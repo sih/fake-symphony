@@ -41,6 +41,7 @@ public class MessageServiceTest {
         m.setTimestamp(1234L);
         m.setMessageId("1234");
         m.setContent("Hello");
+        m.setUserHandle("foobert");
     }
 
 
@@ -54,9 +55,6 @@ public class MessageServiceTest {
 
     @Test
     public void createStreamShouldReturnStreamWithPkSet() throws NoSuchStreamException {
-
-
-
         Stream dbFoo = messageService.createStream(foo);
         assertNotNull(dbFoo.getStreamPk());
         assertNotEquals(Long.valueOf(0L), dbFoo.getStreamPk());
