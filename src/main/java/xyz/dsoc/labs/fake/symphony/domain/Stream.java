@@ -23,6 +23,9 @@ public class Stream {
     @Column(name = "stream_id")
     private String streamId;
 
+    @Column(name = "stream_title")
+    private String title;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages;
 }
