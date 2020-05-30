@@ -28,7 +28,7 @@ public class Message {
     @Id
     @GeneratedValue
     @JsonIgnore
-    @Column(name = "messagePk")
+    @Column(name = "message_pk")
     private Integer messagePk;
 
     @Column(name = "message_id")
