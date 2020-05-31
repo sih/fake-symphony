@@ -20,7 +20,7 @@ The API has two concepts:
 ### Create a new stream
 ````
 curl --location --request POST 'localhost:8080/streams' \
---header 'Content-Type: text/plain' \
+--header 'Content-Type: application/json' \
 --data-raw '{
 	"streamId": "123",
 	"title": "Foo",
